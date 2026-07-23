@@ -359,16 +359,16 @@ const Dashboard_CA = ({ user }) => {
   const stockOutResult = exportCompletionHistory.length;
   const stockOutInSystem = stockOutData.length + exportCompletionHistory.length;
   const isMorning = new Date().getHours() < 12;
-  const stockOutMorning = targets.stock_out?.morning || sumExportMorning;
-  const stockOutEvening = targets.stock_out?.evening || sumExportEvening;
+  const stockOutMorning = isUnitUser ? (exportCaTargets[userUnit]?.morning || 0) : (targets.stock_out?.morning || sumExportMorning);
+  const stockOutEvening = isUnitUser ? (exportCaTargets[userUnit]?.evening || 0) : (targets.stock_out?.evening || sumExportEvening);
   const stockOutTarget = isMorning ? stockOutMorning : (stockOutEvening > 0 ? stockOutEvening : stockOutMorning);
   const stockOutRemain = stockOutTarget > 0 ? Math.max(0, stockOutTarget - stockOutResult) : stockOutData.length;
   const stockOutRatio = stockOutTarget > 0 ? ((stockOutResult / stockOutTarget) * 100).toFixed(2) : (stockOutRemain === 0 ? '100.00' : '0.00');
 
   const stockInResult = importCompletionHistory.length;
   const stockInInSystem = stockInData.length + importCompletionHistory.length;
-  const stockInMorning = targets.stock_in?.morning || sumImportMorning;
-  const stockInEvening = targets.stock_in?.evening || sumImportEvening;
+  const stockInMorning = isUnitUser ? (importCaTargets[userUnit]?.morning || 0) : (targets.stock_in?.morning || sumImportMorning);
+  const stockInEvening = isUnitUser ? (importCaTargets[userUnit]?.evening || 0) : (targets.stock_in?.evening || sumImportEvening);
   const stockInTarget = isMorning ? stockInMorning : (stockInEvening > 0 ? stockInEvening : stockInMorning);
   const stockInRemain = stockInTarget > 0 ? Math.max(0, stockInTarget - stockInResult) : stockInData.length;
   const stockInRatio = stockInTarget > 0 ? ((stockInResult / stockInTarget) * 100).toFixed(2) : (stockInRemain === 0 ? '100.00' : '0.00');

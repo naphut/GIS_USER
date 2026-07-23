@@ -149,7 +149,7 @@ const Dashboad_Stockout = ({ isEmbedded = false, onNavigate, user }) => {
           unitGroups[unit] = (unitGroups[unit] || 0) + 1;
         }
       });
-      m1InSystem = data.filter(item => item.unit !== 'OTHER').length;
+      m1InSystem = isUnitUser ? data.filter(item => item.unit === userUnit).length : data.filter(item => item.unit !== 'OTHER').length;
       
       const completedByUnit = {};
       completionHistory.forEach(c => {
@@ -192,7 +192,7 @@ const Dashboad_Stockout = ({ isEmbedded = false, onNavigate, user }) => {
           unitGroups[unit] = (unitGroups[unit] || 0) + 1;
         }
       });
-      m2InSystem = data.filter(item => item.unit !== 'OTHER').length;
+      m2InSystem = isUnitUser ? data.filter(item => item.unit === userUnit).length : data.filter(item => item.unit !== 'OTHER').length;
       
       const completedByUnit = {};
       completionHistory.forEach(c => {
@@ -241,7 +241,7 @@ const Dashboad_Stockout = ({ isEmbedded = false, onNavigate, user }) => {
           unitGroups[unit] = (unitGroups[unit] || 0) + 1;
         }
       });
-      m3InSystem = data.filter(item => item.unit !== 'OTHER').length;
+      m3InSystem = isUnitUser ? data.filter(item => item.unit === userUnit).length : data.filter(item => item.unit !== 'OTHER').length;
       
       const completedByUnit = {};
       completionHistory.forEach(c => {

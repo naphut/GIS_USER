@@ -118,10 +118,16 @@ const Dashboard_Request = ({ user }) => {
   // Load data from DB on mount
   useEffect(() => {
     const fetchDbData = async () => {
-      const dbData = await loadFromDb(STORAGE_KEYS.DATA, []);
+      let dbData = await loadFromDb(STORAGE_KEYS.DATA, []);
+      if (isUnitUser) {
+        dbData = dbData.filter(item => (item.unit || getUnitFromRequestCode(item.importRequestCode)) === userUnit);
+      }
       setData(dbData);
       
-      const dbCompletion = await loadFromDb(STORAGE_KEYS.COMPLETION, []);
+      let dbCompletion = await loadFromDb(STORAGE_KEYS.COMPLETION, []);
+      if (isUnitUser) {
+        dbCompletion = dbCompletion.filter(item => (item.unit || getUnitFromRequestCode(item.importRequestCode)) === userUnit);
+      }
       setCompletionHistory(dbCompletion);
 
       const dbTargets = await loadFromDb(STORAGE_KEYS.TARGETS, {});
@@ -130,10 +136,16 @@ const Dashboard_Request = ({ user }) => {
       const dbConfirmed = await loadFromDb(STORAGE_KEYS.CONFIRMED, {});
       setConfirmedStatus(dbConfirmed);
 
-      const dbOutData = await loadFromDb('restock_out_data', []);
+      let dbOutData = await loadFromDb('restock_out_data', []);
+      if (isUnitUser) {
+        dbOutData = dbOutData.filter(item => (item.unit || getUnitFromRequestCode(item.requestExportCode)) === userUnit);
+      }
       setRestockOutData(dbOutData);
 
-      const dbOutHistory = await loadFromDb('restock_out_completionHistory', []);
+      let dbOutHistory = await loadFromDb('restock_out_completionHistory', []);
+      if (isUnitUser) {
+        dbOutHistory = dbOutHistory.filter(item => (item.unit || getUnitFromRequestCode(item.requestExportCode)) === userUnit);
+      }
       setRestockOutHistory(dbOutHistory);
 
       const dbOutConfirmed = await loadFromDb('restock_out_confirmedStatus', {});
@@ -151,7 +163,7 @@ const Dashboard_Request = ({ user }) => {
       }
     };
     fetchDbData();
-  }, []);
+  }, [isUnitUser, userUnit]);
 
   const [savedNotes, setSavedNotes] = useState([]);
 
@@ -552,8 +564,8 @@ const Dashboard_Request = ({ user }) => {
 
   const restockInInSystem = data.length + completionHistory.length;
   const isMorning = new Date().getHours() < 12;
-  const restockInMorning = restockTargets.restock_in?.morning || sumInMorning;
-  const restockInEvening = restockTargets.restock_in?.evening || sumInEvening;
+  const restockInMorning = isUnitUser ? (targets[userUnit]?.morning || 0) : (restockTargets.restock_in?.morning || sumInMorning);
+  const restockInEvening = isUnitUser ? (targets[userUnit]?.evening || 0) : (restockTargets.restock_in?.evening || sumInEvening);
   const restockInTarget = isMorning ? restockInMorning : (restockInEvening > 0 ? restockInEvening : restockInMorning);
   const restockInConfirmedCount = useMemo(() => data.filter(item => confirmedStatus[item.id]).length, [data, confirmedStatus]);
   const restockInRemain = restockInTarget > 0 ? Math.max(0, restockInTarget - restockInResult) : (data.length - restockInConfirmedCount);
@@ -566,8 +578,8 @@ const Dashboard_Request = ({ user }) => {
   }, [restockOutData, restockOutHistory, restockOutConfirmed]);
 
   const restockOutInSystem = restockOutData.length + restockOutHistory.length;
-  const restockOutMorning = restockTargets.restock_out?.morning || sumOutMorning;
-  const restockOutEvening = restockTargets.restock_out?.evening || sumOutEvening;
+  const restockOutMorning = isUnitUser ? (restockOutTargets[userUnit]?.morning || 0) : (restockTargets.restock_out?.morning || sumOutMorning);
+  const restockOutEvening = isUnitUser ? (restockOutTargets[userUnit]?.evening || 0) : (restockTargets.restock_out?.evening || sumOutEvening);
   const restockOutTarget = isMorning ? restockOutMorning : (restockOutEvening > 0 ? restockOutEvening : restockOutMorning);
   const restockOutConfirmedCount = useMemo(() => restockOutData.filter(item => restockOutConfirmed[item.id]).length, [restockOutData, restockOutConfirmed]);
   const restockOutRemain = restockOutTarget > 0 ? Math.max(0, restockOutTarget - restockOutResult) : (restockOutData.length - restockOutConfirmedCount);
