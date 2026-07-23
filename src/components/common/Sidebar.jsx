@@ -1,6 +1,27 @@
 import React, { useState } from 'react';
+import { generateAllModulesExcelBlob } from '../../services/telegramBot';
 
 const Sidebar = ({ onSelect, selected, user, onLogout }) => {
+  const isUnitUser = user && user.role === 'unit' && user.unit;
+  const userUnit = user?.unit;
+
+  const handleExportAll = () => {
+    try {
+      const unit = isUnitUser ? userUnit : 'ALL';
+      const blob = generateAllModulesExcelBlob(unit);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `GIS_DASHBOARD_${unit}_${new Date().toISOString().split('T')[0]}.xls`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to export dashboard data:', error);
+    }
+  };
+
   const [isStockoutOpen, setIsStockoutOpen] = useState(false);
   const [isSignedCAOpen, setIsSignedCAOpen] = useState(false);
   const [isRestockOpen, setIsRestockOpen] = useState(false);
@@ -296,6 +317,12 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
               </div>
             </div>
           </div>
+          <button
+            onClick={handleExportAll}
+            className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-100/60 text-[10px] font-bold text-emerald-600 transition-colors uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            📊 ទាញទិន្នន័យទាំងអស់ (Excel)
+          </button>
           <button
             onClick={() => {
               localStorage.removeItem('gis_logged_in_user');
