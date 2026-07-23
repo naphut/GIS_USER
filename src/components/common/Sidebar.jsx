@@ -343,12 +343,11 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
               <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping opacity-75"></div>
             </div>
-            <span className="text-[10px] font-bold text-slate-700">System Online</span>
+            <span className="text-[10px] font-bold text-slate-700">System Online KPI</span>
           </div>
-          <span className="text-[9px] text-slate-400 font-bold bg-white px-2 py-0.5 rounded-full border border-slate-200">v1.0.0</span>
         </div>
         <div className="mt-1.5 text-[8px] text-slate-400 font-medium">
-          © 2026 KPI Pro Management
+          © 2026 KPI  Management asset
         </div>
       </div>
 

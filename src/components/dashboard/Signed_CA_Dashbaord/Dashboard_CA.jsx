@@ -1996,7 +1996,7 @@ const Dashboard_CA = ({ user }) => {
       {null}
 
       {/* ─── SUMMARY CARDS ─── */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 border-l-4 border-blue-500 hover:shadow-md transition-all duration-200">
           <div className="flex items-center justify-between">
             <div>
@@ -2025,34 +2025,6 @@ const Dashboard_CA = ({ user }) => {
             <div className={`text-[10px] font-bold mt-1 ${getRateColor(stats.overall.rate)}`}>
               {stats.overall.rate.toFixed(1)}% Complete
             </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 border-l-4 border-purple-500 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Stock Out</div>
-              <div className="text-2xl font-bold text-purple-600 mt-1 font-mono">{formatNumber(stats.totalStockOut.total)}</div>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center gap-2 text-[10px] text-slate-500">
-            <span className="text-emerald-600 font-semibold">✓ {stats.totalStockOut.signing}</span>
-            <span className="w-px h-3 bg-gray-300"></span>
-            <span className="text-rose-600 font-semibold">✗ {stats.totalStockOut.unsigned}</span>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 border-l-4 border-amber-500 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Stock In</div>
-              <div className="text-2xl font-bold text-amber-600 mt-1 font-mono">{formatNumber(stats.totalStockIn.total)}</div>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center gap-2 text-[10px] text-slate-500">
-            <span className="text-emerald-600 font-semibold">✓ {stats.totalStockIn.signing}</span>
-            <span className="w-px h-3 bg-gray-300"></span>
-            <span className="text-rose-600 font-semibold">✗ {stats.totalStockIn.unsigned}</span>
           </div>
         </div>
       </div>

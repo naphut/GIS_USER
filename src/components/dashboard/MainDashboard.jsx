@@ -631,9 +631,9 @@ const MainDashboard = ({ onNavigate, user }) => {
 
         {/* ─── FOOTER ─── */}
         <div className="mt-12 text-center text-xs text-slate-400 dark:text-slate-500 border-t pt-6 border-slate-200 dark:border-slate-800">
-          <span>© 2026 Daily KPI Management System</span>
+          <span>© 2026 Daily KPI  Asset Management System</span>
           <span className="mx-3">•</span>
-          <span>Version 3.0.1</span>
+          <span>Version v1.0.0</span>
           <span className="mx-3">•</span>
           <span className="inline-flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
