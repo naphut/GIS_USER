@@ -216,28 +216,56 @@ const Dashboard_CA = ({ user }) => {
 
   // Sync inputs if targets state changes
   useEffect(() => {
-    setEditMorningStockOut(targets.stock_out?.morning || sumExportMorning);
-    setEditEveningStockOut(targets.stock_out?.evening || sumExportEvening);
-    setEditMorningStockIn(targets.stock_in?.morning || sumImportMorning);
-    setEditEveningStockIn(targets.stock_in?.evening || sumImportEvening);
-  }, [targets, sumExportMorning, sumExportEvening, sumImportMorning, sumImportEvening]);
+    setEditMorningStockOut(isUnitUser ? sumExportMorning : (targets.stock_out?.morning || sumExportMorning));
+    setEditEveningStockOut(isUnitUser ? sumExportEvening : (targets.stock_out?.evening || sumExportEvening));
+    setEditMorningStockIn(isUnitUser ? sumImportMorning : (targets.stock_in?.morning || sumImportMorning));
+    setEditEveningStockIn(isUnitUser ? sumImportEvening : (targets.stock_in?.evening || sumImportEvening));
+  }, [targets, sumExportMorning, sumExportEvening, sumImportMorning, sumImportEvening, isUnitUser]);
 
   const handleUpdateStockOut = () => {
-    const updated = {
-      ...targets,
-      stock_out: { morning: parseInt(editMorningStockOut) || 0, evening: parseInt(editEveningStockOut) || 0 }
-    };
-    setTargets(updated);
-    saveToDb(STORAGE_KEYS.KPI_TARGETS, updated);
+    if (isUnitUser) {
+      const updatedTargets = {
+        ...exportCaTargets,
+        [userUnit]: {
+          ...exportCaTargets[userUnit],
+          morning: parseInt(editMorningStockOut) || 0,
+          evening: parseInt(editEveningStockOut) || 0,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      setExportCaTargets(updatedTargets);
+      saveToDb('export_ca_targets', updatedTargets);
+    } else {
+      const updated = {
+        ...targets,
+        stock_out: { morning: parseInt(editMorningStockOut) || 0, evening: parseInt(editEveningStockOut) || 0 }
+      };
+      setTargets(updated);
+      saveToDb(STORAGE_KEYS.KPI_TARGETS, updated);
+    }
   };
 
   const handleUpdateStockIn = () => {
-    const updated = {
-      ...targets,
-      stock_in: { morning: parseInt(editMorningStockIn) || 0, evening: parseInt(editEveningStockIn) || 0 }
-    };
-    setTargets(updated);
-    saveToDb(STORAGE_KEYS.KPI_TARGETS, updated);
+    if (isUnitUser) {
+      const updatedTargets = {
+        ...importCaTargets,
+        [userUnit]: {
+          ...importCaTargets[userUnit],
+          morning: parseInt(editMorningStockIn) || 0,
+          evening: parseInt(editEveningStockIn) || 0,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      setImportCaTargets(updatedTargets);
+      saveToDb('import_ca_targets', updatedTargets);
+    } else {
+      const updated = {
+        ...targets,
+        stock_in: { morning: parseInt(editMorningStockIn) || 0, evening: parseInt(editEveningStockIn) || 0 }
+      };
+      setTargets(updated);
+      saveToDb(STORAGE_KEYS.KPI_TARGETS, updated);
+    }
   };
 
   // Telegram integration states

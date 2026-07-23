@@ -257,28 +257,56 @@ const Dashboard_Request = ({ user }) => {
 
   // Sync inputs if targets state changes
   useEffect(() => {
-    setEditMorningRestockIn(restockTargets.restock_in?.morning || sumInMorning);
-    setEditEveningRestockIn(restockTargets.restock_in?.evening || sumInEvening);
-    setEditMorningRestockOut(restockTargets.restock_out?.morning || sumOutMorning);
-    setEditEveningRestockOut(restockTargets.restock_out?.evening || sumOutEvening);
-  }, [restockTargets, sumInMorning, sumInEvening, sumOutMorning, sumOutEvening]);
+    setEditMorningRestockIn(isUnitUser ? sumInMorning : (restockTargets.restock_in?.morning || sumInMorning));
+    setEditEveningRestockIn(isUnitUser ? sumInEvening : (restockTargets.restock_in?.evening || sumInEvening));
+    setEditMorningRestockOut(isUnitUser ? sumOutMorning : (restockTargets.restock_out?.morning || sumOutMorning));
+    setEditEveningRestockOut(isUnitUser ? sumOutEvening : (restockTargets.restock_out?.evening || sumOutEvening));
+  }, [restockTargets, sumInMorning, sumInEvening, sumOutMorning, sumOutEvening, isUnitUser]);
 
   const handleUpdateRestockIn = () => {
-    const updated = {
-      ...restockTargets,
-      restock_in: { morning: parseInt(editMorningRestockIn) || 0, evening: parseInt(editEveningRestockIn) || 0 }
-    };
-    setRestockTargets(updated);
-    saveToDb('kpi_restock_targets', updated);
+    if (isUnitUser) {
+      const updatedTargets = {
+        ...targets,
+        [userUnit]: {
+          ...targets[userUnit],
+          morning: parseInt(editMorningRestockIn) || 0,
+          evening: parseInt(editEveningRestockIn) || 0,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      setTargets(updatedTargets);
+      saveToDb(STORAGE_KEYS.TARGETS, updatedTargets);
+    } else {
+      const updated = {
+        ...restockTargets,
+        restock_in: { morning: parseInt(editMorningRestockIn) || 0, evening: parseInt(editEveningRestockIn) || 0 }
+      };
+      setRestockTargets(updated);
+      saveToDb('kpi_restock_targets', updated);
+    }
   };
 
   const handleUpdateRestockOut = () => {
-    const updated = {
-      ...restockTargets,
-      restock_out: { morning: parseInt(editMorningRestockOut) || 0, evening: parseInt(editEveningRestockOut) || 0 }
-    };
-    setRestockTargets(updated);
-    saveToDb('kpi_restock_targets', updated);
+    if (isUnitUser) {
+      const updatedTargets = {
+        ...restockOutTargets,
+        [userUnit]: {
+          ...restockOutTargets[userUnit],
+          morning: parseInt(editMorningRestockOut) || 0,
+          evening: parseInt(editEveningRestockOut) || 0,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+      setRestockOutTargets(updatedTargets);
+      saveToDb('restock_out_targets', updatedTargets);
+    } else {
+      const updated = {
+        ...restockTargets,
+        restock_out: { morning: parseInt(editMorningRestockOut) || 0, evening: parseInt(editEveningRestockOut) || 0 }
+      };
+      setRestockTargets(updated);
+      saveToDb('kpi_restock_targets', updated);
+    }
   };
   const [selectedUnit, setSelectedUnit] = useState(isUnitUser ? userUnit : 'all');
   const [timeRange, setTimeRange] = useState('all');
