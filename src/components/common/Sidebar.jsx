@@ -319,7 +319,7 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
           </div>
           <button
             onClick={handleExportAll}
-            className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-100/60 text-[10px] font-bold text-emerald-600 transition-colors uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-[10px] font-bold transition-all uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md shadow-emerald-500/20 active:scale-[0.98]"
           >
             📊 ទាញទិន្នន័យទាំងអស់ (Excel)
           </button>
@@ -328,7 +328,7 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
               localStorage.removeItem('gis_logged_in_user');
               if (onLogout) onLogout();
             }}
-            className="w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-100/60 text-[10px] font-bold text-rose-600 transition-colors uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white text-[10px] font-bold transition-all uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md shadow-rose-500/20 active:scale-[0.98]"
           >
             🚪 ចាកចេញ (Logout)
           </button>
