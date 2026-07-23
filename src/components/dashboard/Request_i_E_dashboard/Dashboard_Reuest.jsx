@@ -94,6 +94,8 @@ const calculateDaysDiff = (dateString) => {
 
 const Dashboard_Request = ({ user }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const isUnitUser = user && user.role === 'unit' && user.unit;
+  const userUnit = user?.unit;
 
   // Update time every minute
   useEffect(() => {
@@ -221,20 +223,32 @@ const Dashboard_Request = ({ user }) => {
   });
 
   const sumInMorning = useMemo(() => {
+    if (isUnitUser) {
+      return targets[userUnit]?.morning || 0;
+    }
     return Object.values(targets).reduce((sum, t) => sum + (t?.morning || 0), 0);
-  }, [targets]);
+  }, [targets, isUnitUser, userUnit]);
 
   const sumInEvening = useMemo(() => {
+    if (isUnitUser) {
+      return targets[userUnit]?.evening || 0;
+    }
     return Object.values(targets).reduce((sum, t) => sum + (t?.evening || 0), 0);
-  }, [targets]);
+  }, [targets, isUnitUser, userUnit]);
 
   const sumOutMorning = useMemo(() => {
+    if (isUnitUser) {
+      return restockOutTargets[userUnit]?.morning || 0;
+    }
     return Object.values(restockOutTargets).reduce((sum, t) => sum + (t?.morning || 0), 0);
-  }, [restockOutTargets]);
+  }, [restockOutTargets, isUnitUser, userUnit]);
 
   const sumOutEvening = useMemo(() => {
+    if (isUnitUser) {
+      return restockOutTargets[userUnit]?.evening || 0;
+    }
     return Object.values(restockOutTargets).reduce((sum, t) => sum + (t?.evening || 0), 0);
-  }, [restockOutTargets]);
+  }, [restockOutTargets, isUnitUser, userUnit]);
 
   const [editMorningRestockIn, setEditMorningRestockIn] = useState(restockTargets.restock_in?.morning || sumInMorning);
   const [editEveningRestockIn, setEditEveningRestockIn] = useState(restockTargets.restock_in?.evening || sumInEvening);
@@ -266,9 +280,6 @@ const Dashboard_Request = ({ user }) => {
     setRestockTargets(updated);
     saveToDb('kpi_restock_targets', updated);
   };
-  const isUnitUser = user && user.role === 'unit' && user.unit;
-  const userUnit = user?.unit;
-
   const [selectedUnit, setSelectedUnit] = useState(isUnitUser ? userUnit : 'all');
   const [timeRange, setTimeRange] = useState('all');
 
@@ -564,8 +575,8 @@ const Dashboard_Request = ({ user }) => {
 
   const restockInInSystem = data.length + completionHistory.length;
   const isMorning = new Date().getHours() < 12;
-  const restockInMorning = isUnitUser ? (targets[userUnit]?.morning || 0) : (restockTargets.restock_in?.morning || sumInMorning);
-  const restockInEvening = isUnitUser ? (targets[userUnit]?.evening || 0) : (restockTargets.restock_in?.evening || sumInEvening);
+  const restockInMorning = isUnitUser ? sumInMorning : (restockTargets.restock_in?.morning || sumInMorning);
+  const restockInEvening = isUnitUser ? sumInEvening : (restockTargets.restock_in?.evening || sumInEvening);
   const restockInTarget = isMorning ? restockInMorning : (restockInEvening > 0 ? restockInEvening : restockInMorning);
   const restockInConfirmedCount = useMemo(() => data.filter(item => confirmedStatus[item.id]).length, [data, confirmedStatus]);
   const restockInRemain = restockInTarget > 0 ? Math.max(0, restockInTarget - restockInResult) : (data.length - restockInConfirmedCount);
@@ -578,8 +589,8 @@ const Dashboard_Request = ({ user }) => {
   }, [restockOutData, restockOutHistory, restockOutConfirmed]);
 
   const restockOutInSystem = restockOutData.length + restockOutHistory.length;
-  const restockOutMorning = isUnitUser ? (restockOutTargets[userUnit]?.morning || 0) : (restockTargets.restock_out?.morning || sumOutMorning);
-  const restockOutEvening = isUnitUser ? (restockOutTargets[userUnit]?.evening || 0) : (restockTargets.restock_out?.evening || sumOutEvening);
+  const restockOutMorning = isUnitUser ? sumOutMorning : (restockTargets.restock_out?.morning || sumOutMorning);
+  const restockOutEvening = isUnitUser ? sumOutEvening : (restockTargets.restock_out?.evening || sumOutEvening);
   const restockOutTarget = isMorning ? restockOutMorning : (restockOutEvening > 0 ? restockOutEvening : restockOutMorning);
   const restockOutConfirmedCount = useMemo(() => restockOutData.filter(item => restockOutConfirmed[item.id]).length, [restockOutData, restockOutConfirmed]);
   const restockOutRemain = restockOutTarget > 0 ? Math.max(0, restockOutTarget - restockOutResult) : (restockOutData.length - restockOutConfirmedCount);

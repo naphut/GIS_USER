@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { generateAllModulesExcelBlob } from '../../services/telegramBot';
 
 const Sidebar = ({ onSelect, selected, user, onLogout }) => {
   const [isStockoutOpen, setIsStockoutOpen] = useState(false);
@@ -146,27 +145,6 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
     return false;
   };
 
-  const handleExportAllExcel = () => {
-    try {
-      const isUnitUser = user && user.role === 'unit' && user.unit;
-      const userUnit = user?.unit;
-      const unitParam = isUnitUser ? userUnit : 'ALL';
-      const blob = generateAllModulesExcelBlob(unitParam);
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `GIS_DASHBOARD_${unitParam}_${new Date().toISOString().split('T')[0]}.xls`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Failed to export dashboard data:', error);
-    }
-  };
-
-
-
   return (
     <div className="w-64 h-full bg-white shadow-xl flex flex-col border-r border-gray-100">
       {/* ─── LOGO ─── */}
@@ -301,16 +279,6 @@ const Sidebar = ({ onSelect, selected, user, onLogout }) => {
           ))}
         </div>
       </nav>
-
-      {/* ─── EXPORT ALL DASHBOARD BUTTON ─── */}
-      <div className="px-4 mb-3">
-        <button
-          onClick={handleExportAllExcel}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 active:scale-[0.98] transition-all uppercase tracking-wider cursor-pointer"
-        >
-          📊 Export All Dashboard (Excel)
-        </button>
-      </div>
 
       {/* ─── USER PROFILE BLOCK ─── */}
       {user && (
